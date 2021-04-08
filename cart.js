@@ -50,9 +50,23 @@ function getCart($email) {
 }
 
 function deleteItem($id) {
+    $.ajax({
+        url: Url+'RemoveProduct',
+        type: 'delete',
+        dataType: 'json',
+        // data: JSON.stringify({
+        //     "product_id": $id,
+        // }),
+        contentType: 'text/plain',
 
-    //TODO complete implementation using the product id
-    alert("cart.js/deleteItem() is not implemented")
+        success: function(data) {// on success
+            fetchOneProduct($id);
+        },
+        error: function(data) {
+            // alert(data);
+            console.log(data);
+        }
+    })
 }
 
 function checkOut() {
