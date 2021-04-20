@@ -26,7 +26,7 @@ function fetchProductList() {
             productList='';
             buttonAdd = '<!-- end of col-->'+
             '           <div class="col-auto">'+
-            '           <button class="btn btn-lg btn-success" type="submit" onclick="fetchCameraList()">Camera Quality</button>'
+            '           <button class="btn btn-lg btn-success" type="submit" onclick="fetchCameraList()">Sort by camera quality</button>'
             '           </div>'
             $('#filters').html(buttonAdd);
             $.each(data['data']['List'], function(i, item) {
@@ -70,10 +70,8 @@ function fetchCheapestList() {
 
     jsonObj = [];
     item = {};
-    arrayX = [];
     var productList;
     var productListAdd;
-    var obj;
     var jsonObjArray = [];
     productArray = [];
     !($.trim($('#title').val()) == '') ? item ["title"] = $('#title').val(): '';
@@ -101,7 +99,7 @@ function fetchCheapestList() {
             
             buttonAdd = '<!-- end of col-->'+
             '           <div class="col-auto">'+
-            '           <button class="btn btn-lg btn-success" type="submit" onclick="fetchCameraList()">Camera Quality</button>'
+            '           <button class="btn btn-lg btn-success" type="submit" onclick="fetchCameraList()">Sort by camera quality</button>'
             '           </div>'
             $('#filters').html(buttonAdd);
 
