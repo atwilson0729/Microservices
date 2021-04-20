@@ -12,7 +12,7 @@ function fetchProductList() {
     !($.trim($('#min_price').val()) == '') ? item ["price_from"] = $('#min_price').val(): '';
     !($.trim($('#max_price').val()) == '') ? item ["price_to"] = $('#max_price').val(): '';
 
-    jsonObj.push(item);
+    jsonObj.push(item);//all data for search query
 
     //jQuery Ajax request
     $.ajax({
@@ -52,15 +52,105 @@ function fetchProductList() {
                 productList=productList+productListAdd;
 
             });
+
             $('#items').html(productList);
+        },
+        error: function (data) { //on error, alert the user.
+            alert("Error while fetching data.");
+        }
+    });
+}
+
+
+function fetchCheapestList() {
+
+    jsonObj = [];
+    item = {};
+    arrayX = [];
+    var productList;
+    var productListAdd;
+    var obj;
+    var jsonObjArray = [];
+    productArray = [];
+    !($.trim($('#title').val()) == '') ? item ["title"] = $('#title').val(): '';
+    !($.trim($('#operating_system').val()) == '') ? item ["operating_system"] = $('#operating_system').val(): '';
+    !($.trim($('#min_price').val()) == '') ? item ["price_from"] = $('#min_price').val(): '';
+    !($.trim($('#max_price').val()) == '') ? item ["price_to"] = $('#max_price').val(): '';
+
+    jsonObj.push(item);//all data for search query
+
+    //jQuery Ajax request
+    $.ajax({
+        url: Url+'GetProduct', //API url
+        type: 'get', //type of request (get)
+        dataType: 'json', //dataType, which is json for this lab.
+        contentType: 'text/plain', //contentType, which is text/plain since json is sent as plain text.
+        data: jsonObj[0], //data to be sent
+
+        success: function (data) { //on success calls this functions and passes the API response as the data parameter.
+
+            productList='';
+            $.each(data['data']['List'], function(i, item) {
+                //this is HTML code that is reactively added to the page, your TODO solutions do not need this.
+                jsonObjArray.push(item);
+            });
+
+            //take $ out of money_price
+            for( i = 0 ;i < jsonObjArray.length; i++){
+                jsonObjArray[i]['money_price'] = jsonObjArray[i]['money_price'].replace(/\$/g,'')
+            }
+            jsonObjArray.sort(function(a, b){
+                return Number(a['money_price']) - Number(b['money_price']);
+            });
+            console.log(JSON.stringify(jsonObjArray))
+            for( i = 0 ;i < jsonObjArray.length; i++){
+                //this is HTML code that is reactively added to the page, your TODO solutions do not need this.
+                productListAdd = '<div class="col-sm-6 col-md-4 col-lg-3 mt-4" id="product'+jsonObjArray[i]['id']+'">\n' +
+                '            <div class="card card-inverse card-info">\n' +
+                '                <img class="card-img-top" src="'+jsonObjArray[i]['image']+'">\n' +
+                '                <div class="card-block">\n' +
+                '                    <h4><span class="badge badge-danger">'+jsonObjArray[i]['price']+'</span></h4>\n' +
+                '                    <div class="meta card-text">\n' +
+                '                        <a style="color: deepskyblue">Category - Cell Phones</a>\n' +
+                '                    </div>\n' +
+                '                    <div class="card-text">\n' +
+                '                        '+jsonObjArray[i]['title'].substring(0,50)+'... more\n' +
+                '                    </div>\n' +
+                '                </div>\n' +
+                '                <div class="card-footer">\n' +
+                '                    <small>More information ...</small>\n' +
+                '                    <button class="btn btn-info float-right btn-sm" onclick="fetchOneProduct('+jsonObjArray[i]['id']+')">Detail</button>\n' +
+                '                </div>\n' +
+                '                <div class="card-footer">\n' +
+                '                    <button class="btn btn-info float-right btn-sm" onclick="addToCart('+jsonObjArray[i]['id']+')">Add to Cart</button>\n' +
+                '                </div>\n' +
+                '            </div>\n' +
+                '        </div>';
+            productList=productList+productListAdd;
+            }
+
+            console.log(data['data']['List'])
+            //productList.sort(function(a, b) {
+            //return a.price - b.price;
+            //});
+            $('#items').html(productList);
+
+            //productList.sort(function(a, b) {
+            //let x = a.price - b.price;
+            //return x;
+            //});
+            //$('#items').html(x);
+
+
 
         },
         error: function (data) { //on error, alert the user.
             alert("Error while fetching data.");
         }
-
     });
 }
+ 
+
 
 function fetchOneProduct($id) {
     var product;
@@ -163,7 +253,6 @@ function fetchComments($id) {
 }
 
 function setComment($id) {
-
     let message = $('#message-text').val();
     let score = $('#score').val();
 
@@ -171,26 +260,25 @@ function setComment($id) {
         url: Url+'SetComment',
         type: 'post',
         dataType: 'json',
-        data: JSON.stringify({
-            "product_id": $id,
+        data: {
+            "product_id":$id,
             "comment": message,
             "score": score
-        }),
+        }, //the json is defined here using javascript's dictionary syntax.
         contentType: 'text/plain',
 
-        success: function(data) {// on success
+        success: function (data) { //on success   
             fetchOneProduct($id);
+            //fetch one product and pass in the id.
         },
-        error: function(data) {
-            // alert(data);
+        error: function (data) { //on error, throw an alert
             console.log(data);
         }
-        
     });
 }
+//hmtl is not required.
 
 function addToCart($id) {
-
     let email = $('#email').val();
 
     $.ajax({
@@ -211,7 +299,6 @@ function addToCart($id) {
             console.log(data);
         }
     });
-
 }
 
 function toShoppingCart(){
