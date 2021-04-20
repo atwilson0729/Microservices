@@ -282,7 +282,13 @@ function fetchScreenSize() {
                 //this is HTML code that is reactively added to the page, your TODO solutions do not need this.
                 jsonObjArray.push(item);
             });
-        
+            
+            buttonAdd = '<!-- end of col-->'+
+            '           <div class="col-auto">'+
+            '           <button class="btn btn-lg btn-success" type="submit" onclick="fetchCameraList()">Sort by camera quality</button>'
+            '           </div>'
+            $('#filters').html(buttonAdd);
+            
             for( i = 0 ;i < jsonObjArray.length; i++){
                 jsonObjArray[i]['screen_size'] = jsonObjArray[i]['screen_size'].replace('in','')
             }
